@@ -16,6 +16,7 @@ def add_layer(inputs, in_size, out_size, n_layer, activation_function=None):
     layer_name = 'layer%s' % n_layer
     with tf.name_scope(layer_name):
         with tf.name_scope('weights'):
+            print("in_size", in_size)
             Weights = tf.Variable(tf.random_normal([in_size, out_size]), name='W')
             tf.summary.histogram(layer_name + '/weights', Weights)
         with tf.name_scope('biases'):
