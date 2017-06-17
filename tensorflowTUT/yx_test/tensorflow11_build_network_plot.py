@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 def add_layer(inputs,in_size,out_size,activation_function=None): #activation_function=None线性函数
     print("in_size:", in_size)
     Weights = tf.Variable(tf.random_normal([in_size,out_size])) #Weight中都是随机变量
@@ -31,7 +31,7 @@ def test_activation_function():
 
     train_step = tf.train.GradientDescentOptimizer(0.1).minimize(loss) #0.1学习效率,minimize(loss)减小loss误差
 
-    init = tf.initialize_all_variables() # 初始化所有变量的 "句柄"
+    init = tf.global_variables_initializer() # 初始化所有变量的 "句柄"
     sess = tf.Session()
     sess.run(init) #先执行init
 
@@ -43,6 +43,7 @@ def test_activation_function():
     plt.show()
 
     #训练1k次
+    print("--- train 1000 times")
     for i in range(1000):
         sess.run(train_step,feed_dict={xs:x_data,ys:y_data})
         if i%50==0:
@@ -54,9 +55,9 @@ def test_activation_function():
             #可视化
             prediction_value = sess.run(prediction,feed_dict={xs:x_data,ys:y_data})
             lines = ax.plot(x_data,prediction_value,'r-',lw=5) # 画一条线，x_data X轴，prediction_value Y轴，'r-'红线，lw=5线宽5
-            plt.pause(0.5) #暂停0.1秒
+            plt.pause(0.2) #暂停0.1秒
     sess.close()
-    print("--- over")
+    print("--- prediction over")
 
 def main():
     test_activation_function()
