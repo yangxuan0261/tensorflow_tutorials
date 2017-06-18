@@ -30,7 +30,7 @@ def bias_variable(shape):
 
 def conv2d(x, W):
     # stride [1, x_movement, y_movement, 1]
-    # Must have strides[0] = strides[3] = 1
+    # Must have strides[0] = strides[3] = 1，因为只对长宽做采样
     return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 
 def max_pool_2x2(x):
@@ -45,9 +45,9 @@ x_image = tf.reshape(xs, [-1, 28, 28, 1])
 # print(x_image.shape)  # [n_samples, 28,28,1]
 
 ## conv1 layer ##
-W_conv1 = weight_variable([5,5, 1,32]) # patch 5x5, in size 1, out size 32
+W_conv1 = weight_variable([5,5, 1,32]) # patch 5x5, in size 1, out size 32 # 5x5 长宽采样，深度为1，过滤器的深度为32，
 b_conv1 = bias_variable([32])
-h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) # output size 28x28x32
+h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) # output size 28x28x32 因为使用了 padding='SAME'，所以长宽不变
 h_pool1 = max_pool_2x2(h_conv1)                                         # output size 14x14x32
 
 ## conv2 layer ##
@@ -57,12 +57,12 @@ h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2) # output size 14x14x64
 h_pool2 = max_pool_2x2(h_conv2)                                         # output size 7x7x64
 
 ## fc1 layer ##
-W_fc1 = weight_variable([7*7*64, 1024])
+W_fc1 = weight_variable([7*7*64, 1024]) # 全连接第一层，有 7*7*64 个特征输入神经元，并假定有 1024个输出神经元（在隐层中）
 b_fc1 = bias_variable([1024])
 # [n_samples, 7, 7, 64] ->> [n_samples, 7*7*64]
-h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
+h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])  # 转换成全连接输入层，也就是 n_samples个数据， 7*7*64 个列（特征）
 h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
-h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob) # 防止过拟合问题
 
 ## fc2 layer ##
 W_fc2 = weight_variable([1024, 10])
@@ -83,7 +83,7 @@ if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[
     init = tf.initialize_all_variables()
 else:
     init = tf.global_variables_initializer()
-sess.run(init)
+sess.run(init) # 初始化所有变量
 
 for i in range(1000):
     batch_xs, batch_ys = mnist.train.next_batch(100)

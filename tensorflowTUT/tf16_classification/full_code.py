@@ -32,8 +32,8 @@ def compute_accuracy(v_xs, v_ys):
     return result
 
 # define placeholder for inputs to network
-xs = tf.placeholder(tf.float32, [None, 784]) # 28x28
-ys = tf.placeholder(tf.float32, [None, 10])
+xs = tf.placeholder(tf.float32, [None, 784]) # 28x28个像素表示一个图片数字，也就是有784个特征
+ys = tf.placeholder(tf.float32, [None, 10]) # 最终的结果用10个元素的数组可以表示（数字0~9），例如 2 用 [0 0 1 0 0 0 ...] 表示
 
 # add output layer
 prediction = add_layer(xs, 784, 10,  activation_function=tf.nn.softmax)

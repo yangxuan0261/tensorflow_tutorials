@@ -17,15 +17,20 @@ digits = load_digits()
 X = digits.data
 y = digits.target
 y = LabelBinarizer().fit_transform(y)
+# 获取 训练数据 和 测试数据
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.3)
-
+# np.shape(xxx) = 
+# X_train: (1257, 64)
+# X_test: (540, 64)
+# y_train: (1257, 10)
+# y_test: (540, 10)
 
 def add_layer(inputs, in_size, out_size, layer_name, activation_function=None, ):
     # add one more layer and return the output of this layer
     Weights = tf.Variable(tf.random_normal([in_size, out_size]))
     biases = tf.Variable(tf.zeros([1, out_size]) + 0.1, )
     Wx_plus_b = tf.matmul(inputs, Weights) + biases
-    # here to dropout
+    # here to dropout # 有几率的舍弃（1-keep_prob）个 输出神经元
     Wx_plus_b = tf.nn.dropout(Wx_plus_b, keep_prob)
     if activation_function is None:
         outputs = Wx_plus_b
@@ -37,8 +42,8 @@ def add_layer(inputs, in_size, out_size, layer_name, activation_function=None, )
 
 # define placeholder for inputs to network
 keep_prob = tf.placeholder(tf.float32)
-xs = tf.placeholder(tf.float32, [None, 64])  # 8x8
-ys = tf.placeholder(tf.float32, [None, 10])
+xs = tf.placeholder(tf.float32, [None, 64]) # 8x8像素，64个特征
+ys = tf.placeholder(tf.float32, [None, 10]) # 最终的结果用10个元素的数组可以表示（数字0~9），例如 2 用 [0 0 1 0 0 0 ...] 表示
 
 # add output layer
 l1 = add_layer(xs, 64, 50, 'l1', activation_function=tf.nn.tanh)

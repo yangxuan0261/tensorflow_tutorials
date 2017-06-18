@@ -20,8 +20,8 @@ def test_activation_function():
     noise = np.random.normal(0,0.05,x_data.shape) #噪点
     y_data = np.square(x_data)-0.5+noise
 
-    xs = tf.placeholder(tf.float32,[None,1]) # 不限定行，限定为1列
-    ys = tf.placeholder(tf.float32,[None,1])
+    xs = tf.placeholder(tf.float32,[None,1]) # 不限定行，限定为1列，也就1个特征
+    ys = tf.placeholder(tf.float32,[None,1]) # 不限定行，限定为1列，也就结果用一个维度就就可以表示
     #三层神经，输入层（1个神经元），隐藏层（10神经元），输出层（1个神经元）
     l1 = add_layer(xs,1,10,activation_function=tf.nn.relu) #输入层
     prediction = add_layer(l1,10,1,activation_function=None) #隐藏层

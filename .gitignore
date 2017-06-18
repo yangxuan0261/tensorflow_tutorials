@@ -1,2 +1,4 @@
 .idea
 *WILKER
+/tensorflowTUT/tf18_CNN3/MNIST_data
+/tensorflowTUT/tf16_classification/MNIST_data
