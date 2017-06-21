@@ -7,14 +7,14 @@ import tensorflow as tf
 
 with tf.name_scope("a_name_scope"):
     initializer = tf.constant_initializer(value=1)
-    var1 = tf.get_variable(name='var1', shape=[1], dtype=tf.float32, initializer=initializer)
+    var1 = tf.get_variable(name='var1', shape=[1], dtype=tf.float32, initializer=initializer) # 这种方式初始化变量，tf.name_scope 是无效的
     var2 = tf.Variable(name='var2', initial_value=[2], dtype=tf.float32)
-    var21 = tf.Variable(name='var2', initial_value=[2.1], dtype=tf.float32)
+    var21 = tf.Variable(name='var2', initial_value=[2.1], dtype=tf.float32) # 会初始化一个新的变量名为 var2_1
     var22 = tf.Variable(name='var2', initial_value=[2.2], dtype=tf.float32)
 
 
 with tf.Session() as sess:
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
     print(var1.name)        # var1:0
     print(sess.run(var1))   # [ 1.]
     print(var2.name)        # a_name_scope/var2:0
@@ -27,10 +27,10 @@ with tf.Session() as sess:
 
 with tf.variable_scope("a_variable_scope") as scope:
     initializer = tf.constant_initializer(value=3)
-    var3 = tf.get_variable(name='var3', shape=[1], dtype=tf.float32, initializer=initializer)
+    var3 = tf.get_variable(name='var3', shape=[1], dtype=tf.float32, initializer=initializer) # 这种方式初始化变量，tf.variable_scope 是有效的
     var4 = tf.Variable(name='var4', initial_value=[4], dtype=tf.float32)
-    var4_reuse = tf.Variable(name='var4', initial_value=[4], dtype=tf.float32)
-    scope.reuse_variables()
+    var4_reuse = tf.Variable(name='var4', initial_value=[4], dtype=tf.float32) # 同样会初始化一个新的变量名为 var4_1
+    scope.reuse_variables() # 声明变量是可以重复使用的，所以一下如果get到已存在变量时会get到那个变量的张量，不会新建一个变量，如果注释掉这个 scope.reuse_variables 则会报错
     var3_reuse = tf.get_variable(name='var3',)
 
 with tf.Session() as sess:
